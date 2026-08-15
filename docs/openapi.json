@@ -1,0 +1,602 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "RumbIA Platform API",
+    "description": "Contrato OpenAPI de los servicios RumbIA: WAHA Gateway, Backend orquestador y Cotizador. El chatbot LangChain y WAHA son dependencias externas.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8090",
+      "description": "WAHA Gateway"
+    },
+    {
+      "url": "http://localhost:8000",
+      "description": "RumbIA Backend"
+    },
+    {
+      "url": "http://localhost:8001",
+      "description": "RumbIA Cotizador"
+    }
+  ],
+  "tags": [
+    { "name": "waha", "description": "Webhook de entrada desde WAHA" },
+    { "name": "RumbIA", "description": "Agente orquestador y emisión de póliza" },
+    { "name": "Root", "description": "Raíz y salud de las APIs" },
+    { "name": "cotizaciones", "description": "Cálculo actuarial e imágenes de propuesta" }
+  ],
+  "paths": {
+    "/waha/webhook": {
+      "post": {
+        "tags": ["waha"],
+        "summary": "Process webhook",
+        "description": "Recibe el evento message de WAHA, transcribe audio si aplica, envía la pregunta al chatbot LangChain y responde por sendText.",
+        "operationId": "wahaWebhook",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/WahaRequest" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Mensaje procesado",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/WahaWebhookResponse" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/": {
+      "get": {
+        "tags": ["Root"],
+        "summary": "Endpoint raíz de la API",
+        "description": "Información de bienvenida del backend o del cotizador según el servidor.",
+        "operationId": "root",
+        "responses": {
+          "200": {
+            "description": "Información de la API",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/RootResponse" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/health": {
+      "get": {
+        "tags": ["Root"],
+        "summary": "Estado de salud de la API",
+        "operationId": "health",
+        "responses": {
+          "200": {
+            "description": "Servicio saludable",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HealthRootResponse" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/rumbia/": {
+      "get": {
+        "tags": ["RumbIA"],
+        "summary": "Endpoint raíz de RumbIA",
+        "description": "Presentación del agente RumbIA.",
+        "operationId": "rootRumbia",
+        "responses": {
+          "200": {
+            "description": "Presentación",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/RumbiaResponse" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/rumbia/saludo": {
+      "get": {
+        "tags": ["RumbIA"],
+        "summary": "Saludo del agente RumbIA",
+        "operationId": "saludoRumbia",
+        "responses": {
+          "200": {
+            "description": "Saludo",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/RumbiaResponse" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/rumbia/health": {
+      "get": {
+        "tags": ["RumbIA"],
+        "summary": "Estado de salud del agente RumbIA",
+        "operationId": "healthRumbia",
+        "responses": {
+          "200": {
+            "description": "Salud del agente",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HealthResponse" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/rumbia/info": {
+      "get": {
+        "tags": ["RumbIA"],
+        "summary": "Información del agente RumbIA",
+        "operationId": "infoRumbia",
+        "responses": {
+          "200": {
+            "description": "Capacidades del orquestador",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/RumbiaInfoResponse" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/rumbia/emision-poliza": {
+      "post": {
+        "tags": ["RumbIA"],
+        "summary": "Emisión de póliza de seguro",
+        "description": "Emite la póliza, genera PDF, envía email y notifica por WhatsApp vía WAHA.",
+        "operationId": "emisionPoliza",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/EmisionPolizaRequest" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Póliza emitida",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/EmisionPolizaResponse" }
+              }
+            }
+          },
+          "422": {
+            "description": "Error de validación"
+          }
+        }
+      }
+    },
+    "/api/v1/cotizaciones": {
+      "post": {
+        "tags": ["cotizaciones"],
+        "summary": "Crear cotización individual",
+        "operationId": "crearCotizacion",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CotizacionCreate" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Cotización creada",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CotizacionResponse" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/cotizaciones/coleccion": {
+      "post": {
+        "tags": ["cotizaciones"],
+        "summary": "Crear cotizaciones por colección",
+        "description": "Genera cotizaciones para todos los periodos configurados de una prima.",
+        "operationId": "crearCotizacionColeccion",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CotizacionColeccionRequest" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Colección de cotizaciones",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CotizacionColeccionResponse" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/cotizaciones/generar-imagen": {
+      "post": {
+        "tags": ["cotizaciones"],
+        "summary": "Generar imagen de cotización",
+        "description": "JPEG con gráfico de evolución de devolución y tabla resumen.",
+        "operationId": "generarImagenCotizacion",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/ImageGenerationRequest" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Imagen generada",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ImageGenerationResponse" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/cotizaciones/cache": {
+      "delete": {
+        "tags": ["cotizaciones"],
+        "summary": "Limpiar cache de colecciones",
+        "operationId": "limpiarCache",
+        "responses": {
+          "200": {
+            "description": "Cache limpiado",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CacheClearResponse" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/cotizaciones/cache/estadisticas": {
+      "get": {
+        "tags": ["cotizaciones"],
+        "summary": "Estadísticas del cache",
+        "operationId": "estadisticasCache",
+        "responses": {
+          "200": {
+            "description": "Estadísticas",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CacheStatsResponse" }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "MediaPayload": {
+        "type": "object",
+        "properties": {
+          "url": { "type": "string", "nullable": true },
+          "mimetype": { "type": "string", "nullable": true, "example": "audio/ogg; codecs=opus" },
+          "filename": { "type": "string", "nullable": true },
+          "error": { "type": "string", "nullable": true }
+        }
+      },
+      "MessagePayload": {
+        "type": "object",
+        "required": ["id", "timestamp", "from", "fromMe", "body", "hasMedia"],
+        "properties": {
+          "id": { "type": "string" },
+          "timestamp": { "type": "integer" },
+          "from": { "type": "string", "example": "51999999999@c.us" },
+          "fromMe": { "type": "boolean" },
+          "to": { "type": "string" },
+          "body": { "type": "string" },
+          "hasMedia": { "type": "boolean" },
+          "ack": { "type": "integer", "nullable": true },
+          "media": { "$ref": "#/components/schemas/MediaPayload" }
+        }
+      },
+      "WahaRequest": {
+        "type": "object",
+        "required": ["event", "session", "payload"],
+        "properties": {
+          "event": { "type": "string", "example": "message" },
+          "session": { "type": "string", "example": "rumbia" },
+          "payload": { "$ref": "#/components/schemas/MessagePayload" }
+        }
+      },
+      "WahaWebhookResponse": {
+        "type": "object",
+        "properties": {
+          "status": { "type": "string", "enum": ["success", "error"] },
+          "message": { "type": "string" },
+          "chatbot_response": {},
+          "send_response": {}
+        }
+      },
+      "RootResponse": {
+        "type": "object",
+        "properties": {
+          "message": { "type": "string" },
+          "description": { "type": "string" },
+          "version": { "type": "string" },
+          "status": { "type": "string" },
+          "timestamp": { "type": "string", "format": "date-time" },
+          "docs_url": { "type": "string" },
+          "api_v1": { "type": "string" }
+        }
+      },
+      "HealthRootResponse": {
+        "type": "object",
+        "properties": {
+          "status": { "type": "string", "example": "healthy" },
+          "message": { "type": "string" },
+          "version": { "type": "string" },
+          "timestamp": { "type": "string", "format": "date-time" },
+          "uptime": { "type": "string" }
+        }
+      },
+      "RumbiaResponse": {
+        "type": "object",
+        "required": ["message", "agent_name", "timestamp", "status"],
+        "properties": {
+          "message": { "type": "string" },
+          "agent_name": { "type": "string", "example": "RumbIA" },
+          "timestamp": { "type": "string", "format": "date-time" },
+          "status": { "type": "string" }
+        }
+      },
+      "HealthResponse": {
+        "type": "object",
+        "required": ["status", "message", "timestamp", "version"],
+        "properties": {
+          "status": { "type": "string" },
+          "message": { "type": "string" },
+          "timestamp": { "type": "string", "format": "date-time" },
+          "version": { "type": "string" }
+        }
+      },
+      "RumbiaInfoResponse": {
+        "type": "object",
+        "properties": {
+          "agent_name": { "type": "string" },
+          "version": { "type": "string" },
+          "type": { "type": "string" },
+          "description": { "type": "string" },
+          "capabilities": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "status": { "type": "string" },
+          "created_at": { "type": "string", "format": "date-time" },
+          "last_update": { "type": "string", "format": "date-time" }
+        }
+      },
+      "ClienteData": {
+        "type": "object",
+        "required": ["dni", "nombre", "fechaNacimiento", "genero", "telefono", "correo"],
+        "properties": {
+          "dni": { "type": "string" },
+          "nombre": { "type": "string" },
+          "fechaNacimiento": { "type": "string", "format": "date" },
+          "genero": { "type": "string", "example": "M" },
+          "telefono": { "type": "string" },
+          "correo": { "type": "string", "format": "email" }
+        }
+      },
+      "ParametrosCotizacionEmision": {
+        "type": "object",
+        "required": ["edad_actuarial", "sexo", "prima"],
+        "properties": {
+          "edad_actuarial": { "type": "integer" },
+          "sexo": { "type": "string", "enum": ["M", "F"] },
+          "prima": { "type": "number", "format": "float" }
+        }
+      },
+      "CotizacionData": {
+        "type": "object",
+        "required": [
+          "producto",
+          "parametros",
+          "id",
+          "fecha_creacion",
+          "porcentaje_devolucion",
+          "tasa_implicita",
+          "suma_asegurada",
+          "devolucion",
+          "prima_anual",
+          "tabla_devolucion"
+        ],
+        "properties": {
+          "producto": { "type": "string", "example": "RUMBO" },
+          "parametros": { "$ref": "#/components/schemas/ParametrosCotizacionEmision" },
+          "id": { "type": "integer" },
+          "fecha_creacion": { "type": "string", "format": "date-time" },
+          "porcentaje_devolucion": { "type": "number", "format": "float" },
+          "tasa_implicita": { "type": "number", "format": "float" },
+          "suma_asegurada": { "type": "number", "format": "float" },
+          "devolucion": { "type": "number", "format": "float" },
+          "prima_anual": { "type": "number", "format": "float" },
+          "tabla_devolucion": { "type": "string", "example": "[60, 70, 70, 70, 111.34]" }
+        }
+      },
+      "EmisionPolizaRequest": {
+        "type": "object",
+        "required": ["cliente", "cotizacion"],
+        "properties": {
+          "cliente": { "$ref": "#/components/schemas/ClienteData" },
+          "cotizacion": { "$ref": "#/components/schemas/CotizacionData" }
+        }
+      },
+      "WhatsAppDetalles": {
+        "type": "object",
+        "required": ["success", "numero_destino", "mensaje_enviado", "imagen_enviada", "pdf_enviado"],
+        "properties": {
+          "success": { "type": "boolean" },
+          "numero_destino": { "type": "string" },
+          "mensaje_enviado": { "type": "boolean" },
+          "imagen_enviada": { "type": "boolean" },
+          "pdf_enviado": { "type": "boolean" },
+          "errores": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        }
+      },
+      "EmisionPolizaResponse": {
+        "type": "object",
+        "required": ["status", "numero_poliza", "numero_documento", "prima_mensual", "email_enviado", "whatsapp_enviado"],
+        "properties": {
+          "status": { "type": "string", "example": "success" },
+          "numero_poliza": { "type": "string", "example": "RumbIA001" },
+          "numero_documento": { "type": "string" },
+          "prima_mensual": { "type": "number", "format": "float" },
+          "email_enviado": { "type": "boolean" },
+          "whatsapp_enviado": { "type": "boolean" },
+          "whatsapp_detalles": { "$ref": "#/components/schemas/WhatsAppDetalles" }
+        }
+      },
+      "ParametrosCotizacion": {
+        "type": "object",
+        "required": ["edad_actuarial", "sexo", "prima", "periodo_pago"],
+        "properties": {
+          "edad_actuarial": { "type": "integer", "minimum": 0 },
+          "sexo": { "type": "string", "enum": ["M", "F"] },
+          "prima": { "type": "number", "format": "float", "minimum": 0 },
+          "periodo_pago": { "type": "integer", "minimum": 1 }
+        }
+      },
+      "CotizacionCreate": {
+        "type": "object",
+        "required": ["producto", "parametros"],
+        "properties": {
+          "producto": { "type": "string", "minLength": 1 },
+          "parametros": { "$ref": "#/components/schemas/ParametrosCotizacion" }
+        }
+      },
+      "CotizacionResponse": {
+        "type": "object",
+        "required": ["producto", "parametros", "id", "fecha_creacion"],
+        "properties": {
+          "id": { "type": "integer" },
+          "producto": { "type": "string" },
+          "parametros": { "$ref": "#/components/schemas/ParametrosCotizacion" },
+          "fecha_creacion": { "type": "string", "format": "date-time" },
+          "porcentaje_devolucion": { "type": "number", "nullable": true },
+          "tasa_implicita": { "type": "number", "nullable": true },
+          "suma_asegurada": { "type": "number", "nullable": true },
+          "devolucion": { "type": "number", "nullable": true },
+          "prima_anual": { "type": "number", "nullable": true },
+          "tabla_devolucion": { "type": "string", "nullable": true }
+        }
+      },
+      "CotizacionColeccionRequest": {
+        "type": "object",
+        "required": ["producto", "edad_actuarial", "sexo", "prima"],
+        "properties": {
+          "producto": { "type": "string", "minLength": 1 },
+          "edad_actuarial": { "type": "integer", "minimum": 0 },
+          "sexo": { "type": "string", "enum": ["M", "F"] },
+          "prima": { "type": "number", "format": "float", "minimum": 0 }
+        }
+      },
+      "CotizacionDetalle": {
+        "type": "object",
+        "properties": {
+          "porcentaje_devolucion": { "type": "string", "nullable": true },
+          "trea": { "type": "string", "nullable": true },
+          "aporte_total": { "type": "string", "nullable": true },
+          "ganancia_total": { "type": "string", "nullable": true },
+          "devolucion_total": { "type": "string", "nullable": true },
+          "rentabilidad": { "type": "string", "nullable": true },
+          "tabla_devolucion": { "type": "string", "nullable": true }
+        }
+      },
+      "CotizacionPorPeriodo": {
+        "type": "object",
+        "required": ["periodo", "cotizacion"],
+        "properties": {
+          "periodo": { "type": "integer" },
+          "cotizacion": { "$ref": "#/components/schemas/CotizacionDetalle" }
+        }
+      },
+      "CotizacionColeccionResponse": {
+        "type": "object",
+        "required": ["prima", "periodos_disponibles", "cotizaciones", "total_cotizaciones"],
+        "properties": {
+          "prima": { "type": "number" },
+          "periodos_disponibles": {
+            "type": "array",
+            "items": { "type": "integer" }
+          },
+          "cotizaciones": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/CotizacionPorPeriodo" }
+          },
+          "total_cotizaciones": { "type": "integer" },
+          "imagen_base64": { "type": "string", "nullable": true }
+        }
+      },
+      "ImageGenerationRequest": {
+        "type": "object",
+        "required": ["prima", "edad_actuarial", "sexo"],
+        "properties": {
+          "prima": { "type": "number", "minimum": 0 },
+          "edad_actuarial": { "type": "integer", "minimum": 0 },
+          "sexo": { "type": "string", "enum": ["M", "F"] },
+          "nombre_archivo": { "type": "string", "nullable": true }
+        }
+      },
+      "ImageGenerationResponse": {
+        "type": "object",
+        "required": ["ruta_archivo", "nombre_archivo", "mensaje"],
+        "properties": {
+          "ruta_archivo": { "type": "string" },
+          "nombre_archivo": { "type": "string" },
+          "mensaje": { "type": "string" }
+        }
+      },
+      "CacheClearResponse": {
+        "type": "object",
+        "properties": {
+          "mensaje": { "type": "string" },
+          "elementos_eliminados": { "type": "integer" }
+        }
+      },
+      "CacheStatsResponse": {
+        "type": "object",
+        "properties": {
+          "estadisticas": { "type": "object" },
+          "mensaje": { "type": "string" }
+        }
+      }
+    }
+  }
+}

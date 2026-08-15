@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>wcdz · Sistema agéntico · Aseguradora Chanchito Feliz</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F4F5F7; --card:#FFFFFF; --soft:#F0F2F5; --soft2:#E7EAF0;
+  --ink:#16243F; --body:#3D4757; --muted:#7C8596; --line:#E2E6EC;
+  --coral:#FF7A50; --coral-d:#C84A22; --coral-t:#FFF0EA;
+  --green:#12805F; --green-t:#E2F3EC; --red:#C93B32; --red-t:#FBEAE8;
+  --blue:#2A6BB0; --blue-t:#E8F0FA; --amber:#B37D0C; --amber-t:#FBF1DD;
+  --violet:#6A4BA8; --violet-t:#EFEAF8;
+  --term:#101826; --term-2:#18233A; --term-fg:#E6EDF7;
+  --disp:"Space Grotesk",system-ui,sans-serif;
+  --sans:"IBM Plex Sans",system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,monospace;
+  --rail:276px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{background:var(--paper);color:var(--body);font-family:var(--sans);font-size:15px;line-height:1.62;-webkit-font-smoothing:antialiased}
+.app{display:flex;height:100vh;overflow:hidden}
+
+.rail{width:var(--rail);flex:0 0 var(--rail);background:var(--card);border-right:1px solid var(--line);display:flex;flex-direction:column;overflow-y:auto}
+.brand{padding:22px 22px 18px;border-bottom:1px solid var(--line)}
+.brand .k{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--coral);margin:0}
+.brand h1{font-family:var(--disp);font-size:17px;font-weight:700;color:var(--ink);margin:7px 0 3px;line-height:1.3;letter-spacing:-.01em}
+.brand p{font-size:11.5px;color:var(--muted);margin:0}
+nav{padding:8px 0 60px}
+.ng{font-family:var(--mono);font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);padding:17px 22px 7px}
+.ni{display:flex;gap:11px;align-items:baseline;width:100%;text-align:left;background:none;border:0;color:var(--body);font-family:var(--sans);font-size:13.4px;padding:7px 22px;cursor:pointer;border-left:2px solid transparent;line-height:1.4}
+.ni:hover{background:var(--soft)}
+.ni .n{font-family:var(--mono);font-size:10.5px;color:var(--muted);flex:0 0 18px}
+.ni.on{background:var(--coral-t);border-left-color:var(--coral);color:var(--ink);font-weight:600}
+.ni.on .n{color:var(--coral-d)}
+
+.main{flex:1;overflow-y:auto;scroll-behavior:smooth;position:relative}
+.topbar{position:sticky;top:0;z-index:30;background:rgba(244,245,247,.93);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);display:flex;align-items:center;gap:14px;padding:10px 40px}
+.topbar .tt{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-right:auto}
+.btn{border:1px solid var(--line);background:var(--card);border-radius:8px;font-family:var(--sans);font-size:12.5px;font-weight:500;color:var(--body);padding:7px 13px;cursor:pointer;text-decoration:none}
+.btn:hover{border-color:var(--coral);color:var(--coral-d)}
+.wrap{max-width:1000px;margin:0 auto;padding:14px 48px 160px}
+
+section.step{padding:44px 0 10px;border-top:1px solid var(--line);scroll-margin-top:60px}
+section.step:first-of-type{border-top:0}
+.eyebrow{font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--coral-d);margin:0 0 8px}
+h2{font-family:var(--disp);font-size:27px;font-weight:700;color:var(--ink);letter-spacing:-.02em;line-height:1.2;margin:0 0 10px}
+h3{font-family:var(--disp);font-size:16.5px;font-weight:700;color:var(--ink);margin:30px 0 8px}
+p{margin:0 0 13px}
+.lead{font-size:16.5px;color:var(--body)}
+ul{margin:0 0 14px;padding-left:20px}
+li{margin-bottom:6px}
+code.i{font-family:var(--mono);font-size:12.8px;background:var(--soft2);border-radius:4px;padding:1px 5px;color:var(--ink)}
+a{color:var(--coral-d)}
+
+.cmd{position:relative;background:var(--term);border-radius:11px;margin:0 0 13px;overflow:hidden}
+.cmd .head{display:flex;align-items:center;gap:8px;padding:8px 12px;border-bottom:1px solid rgba(255,255,255,.07)}
+.cmd .head .dot{width:8px;height:8px;border-radius:50%;background:#3A4761}
+.cmd .head .lbl{font-family:var(--mono);font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:#7A8AA8;margin-left:4px}
+.cmd .head .cp{margin-left:auto;background:rgba(255,255,255,.07);border:0;color:#B9C6DC;font-family:var(--mono);font-size:10.5px;padding:4px 9px;border-radius:5px;cursor:pointer}
+.cmd .head .cp:hover{background:var(--coral);color:#fff}
+.cmd pre{margin:0;padding:13px 15px;overflow-x:auto;font-family:var(--mono);font-size:12.9px;line-height:1.72;color:var(--term-fg);white-space:pre;tab-size:2}
+.cmd pre .cm{color:#6E7F9C}
+
+.call{border-radius:11px;padding:13px 16px;margin:0 0 14px;font-size:14px;border:1px solid}
+.call .t{font-weight:600;display:block;margin-bottom:2px;font-size:13px}
+.call.info{background:var(--blue-t);border-color:#C7DAF1;color:#1F4E82}
+.call.warn{background:var(--amber-t);border-color:#EBD9AE;color:#84600B}
+.call.ok{background:var(--green-t);border-color:#BFE3D2;color:#0C6349}
+.call.bad{background:var(--red-t);border-color:#F1CBC7;color:#96291F}
+.call p:last-child{margin-bottom:0}
+
+.art{background:var(--card);border:1px solid var(--line);border-radius:15px;margin:0 0 16px;overflow:hidden;box-shadow:0 1px 2px rgba(20,35,65,.05)}
+.art .ahead{display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid var(--line);background:linear-gradient(180deg,#FFF,#FBFCFD)}
+.art .ahead .at{font-family:var(--mono);font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--muted)}
+.art .ahead .an{font-family:var(--disp);font-size:14px;font-weight:700;color:var(--ink)}
+.art .abody{padding:20px 18px}
+.art img.arch{display:block;width:100%;height:auto;border-radius:8px;background:var(--soft)}
+.mermaid-box{background:#fff;border-radius:10px;overflow:visible;padding:8px 4px;min-height:120px}
+.mermaid-box svg{display:block;margin:0 auto;max-width:100%;height:auto}
+.mermaid-box .wait{font-family:var(--mono);font-size:12px;color:var(--muted);padding:24px;text-align:center}
+.zbar{display:flex;align-items:center;gap:5px;margin-left:auto}
+.zb{min-width:30px;height:28px;border:1px solid var(--line);background:var(--card);border-radius:7px;font-family:var(--disp);font-size:16px;font-weight:700;color:var(--ink);cursor:pointer;line-height:1;padding:0 8px}
+.zb:hover{border-color:var(--coral);color:var(--coral-d)}
+.zb.reset{font-family:var(--mono);font-size:11px;font-weight:500}
+.zlbl{font-family:var(--mono);font-size:11px;color:var(--muted);min-width:40px;text-align:center}
+.zview{overflow:visible;max-height:none;background:#fff}
+.zinner{width:100%}
+.zview.is-zoomed{overflow:auto;max-height:min(72vh,820px);border-radius:10px;cursor:grab}
+.zview.is-zoomed.is-panning{cursor:grabbing}
+.zview.is-zoomed .zinner{width:max-content;min-width:100%}
+.zview.is-zoomed .mermaid-box{width:max-content;max-width:none}
+.zview.is-zoomed img,.zview.is-zoomed svg{user-select:none;-webkit-user-drag:none;pointer-events:none}
+.ahead .fsb{margin-left:8px}
+
+table.t{width:100%;border-collapse:collapse;font-size:13px;margin:0 0 14px}
+table.t th{text-align:left;font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--line);padding:8px 10px;font-weight:500}
+table.t td{border-bottom:1px solid var(--line);padding:9px 10px;vertical-align:top}
+table.t tr:last-child td{border-bottom:0}
+table.t td code{font-family:var(--mono);font-size:12.2px;color:var(--ink)}
+table.t tr.tot td{font-weight:600;color:var(--ink);background:var(--coral-t)}
+table.t .num{font-family:var(--mono);font-size:12.4px;white-space:nowrap}
+
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:11px;margin:0 0 16px}
+.cardm{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 15px}
+.cardm .t{font-family:var(--disp);font-size:13.5px;font-weight:700;color:var(--ink);margin-bottom:4px}
+.cardm .d{font-size:12.8px;color:var(--muted);line-height:1.5}
+.cardm .n{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--coral-d);margin-bottom:6px}
+.cardm.kpi .big{font-family:var(--disp);font-size:28px;font-weight:700;color:var(--ink);letter-spacing:-.03em;line-height:1.1;margin:4px 0 6px}
+.cardm.kpi.green{border-color:#BFE3D2;background:linear-gradient(180deg,#fff,var(--green-t))}
+.cardm.kpi.blue{border-color:#C7DAF1;background:linear-gradient(180deg,#fff,var(--blue-t))}
+.cardm.kpi.coral{border-color:#F3C4B2;background:linear-gradient(180deg,#fff,var(--coral-t))}
+
+.checks{list-style:none;padding:0;margin:0 0 14px}
+.checks li{display:flex;gap:9px;align-items:flex-start;padding:7px 0;border-bottom:1px dashed var(--line);font-size:13.6px}
+.checks li:last-child{border-bottom:0}
+.checks .b{flex:0 0 17px;height:17px;border-radius:5px;border:1.5px solid var(--coral);color:var(--coral);font-size:11px;display:flex;align-items:center;justify-content:center;margin-top:2px}
+
+.flow3{display:flex;align-items:center;gap:8px;margin:0 0 14px;flex-wrap:wrap}
+.flow3 .b{background:var(--soft);border:1px solid var(--line);border-radius:9px;padding:9px 12px;font-size:12.6px;flex:1;min-width:140px}
+.flow3 .b b{display:block;font-family:var(--disp);font-size:12.8px;color:var(--ink)}
+.flow3 .a{color:#C3CBD8}
+
+.meta{display:grid;grid-template-columns:auto 1fr;gap:5px 14px;font-family:var(--mono);font-size:12.4px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin:0 0 16px}
+.meta .k{color:var(--muted)}
+.meta .v{color:var(--ink)}
+
+.foot{margin-top:60px;padding-top:22px;border-top:1px solid var(--line);font-size:12.5px;color:var(--muted);display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
+
+.fsb{margin-left:auto;border:1px solid var(--line);background:var(--card);border-radius:7px;font-family:var(--sans);font-size:12px;font-weight:500;color:var(--body);padding:5px 11px;cursor:pointer;white-space:nowrap;flex-shrink:0}
+.fsb:hover{border-color:var(--coral);color:var(--coral-d)}
+.art:fullscreen,.art.fsx{background:var(--card);border-radius:0;display:flex;flex-direction:column;overflow:hidden;padding:0;box-shadow:none}
+.art.fsx{position:fixed;inset:0;z-index:1000;margin:0;width:auto}
+.art:fullscreen .ahead,.art.fsx .ahead{padding:14px 24px;flex:0 0 auto}
+.art:fullscreen .abody,.art.fsx .abody{flex:1;min-height:0;display:flex;flex-direction:column;width:100%;max-width:none;margin:0;padding:16px 24px 24px}
+.art:fullscreen .zview,.art.fsx .zview{flex:1;min-height:0;max-height:none;overflow:hidden;display:flex;align-items:center;justify-content:center;background:var(--card)}
+.art:fullscreen .zinner,.art.fsx .zinner{width:100%;height:100%;display:flex;align-items:center;justify-content:center}
+.art:fullscreen img.arch,.art.fsx img.arch{width:auto;height:auto;max-width:100%;max-height:100%;object-fit:contain;background:var(--card)}
+.art:fullscreen .mermaid-box,.art.fsx .mermaid-box{width:100%;height:100%;display:flex;align-items:center;justify-content:center}
+.art:fullscreen .mermaid-box svg,.art.fsx .mermaid-box svg{max-width:100%;max-height:100%}
+.art:fullscreen .zview.is-zoomed,.art.fsx .zview.is-zoomed{overflow:auto;align-items:flex-start;justify-content:flex-start}
+.art:fullscreen .zview.is-zoomed .zinner,.art.fsx .zview.is-zoomed .zinner{height:auto;width:max-content;min-width:100%;align-items:flex-start;justify-content:flex-start}
+.art:fullscreen .zview.is-zoomed img.arch,.art.fsx .zview.is-zoomed img.arch{max-width:none;max-height:none;width:auto}
+.art:fullscreen .zview.is-zoomed .mermaid-box,.art.fsx .zview.is-zoomed .mermaid-box{width:max-content;height:auto}
+.art:fullscreen .zview.is-zoomed .mermaid-box svg,.art.fsx .zview.is-zoomed .mermaid-box svg{max-width:none;max-height:none}
+
+@media (max-width:960px){
+  .rail{display:none}
+  .wrap{padding:14px 20px 120px}
+  .topbar{padding:10px 20px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+@media print{
+  .rail,.topbar,.fsb{display:none!important}
+  .app,.main{height:auto;overflow:visible}
+  .wrap{max-width:none;padding:0}
+  section.step{break-inside:avoid}
+}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="rail">
+  <div class="brand">
+    <p class="k">wcdz · Tarea Sesión 2</p>
+    <h1>Sistema Agéntico para Ventas Asistidas</h1>
+    <p>William Elisban Chávez Díaz</p>
+  </div>
+  <nav id="nav"></nav>
+</aside>
+
+<main class="main" id="main">
+  <div class="topbar">
+    <span class="tt">Propuesta de Solución · Aseguradora Chanchito Feliz · Sistema Agéntico para Ventas Asistidas · Agosto 2026</span>
+    <a class="btn" href="https://cloud.google.com/products/calculator" target="_blank" rel="noopener">Calculadora GCP</a>
+    <a class="btn" href="https://cloud.google.com/vertex-ai/generative-ai/pricing" target="_blank" rel="noopener">Pricing Vertex AI</a>
+  </div>
+  <div class="wrap">
+
+  <section class="step" id="s0" data-group="Propuesta" data-nav="El problema">
+    <p class="eyebrow">Contexto de negocio</p>
+    <h2>La venta asistida de Inversión Segura se corta cuando no hay asesor.</h2>
+    <p class="lead"><b>Aseguradora Chanchito Feliz</b> vende <b>Inversión Segura</b> por WhatsApp. El canal ya existe, pero la atención la sostienen <b>pocos asesores de ventas</b>. El cliente que escribe fuera de turno no compra: espera o agenda una llamada. Esa fricción es la que se quiere romper para subir ventas.</p>
+    <div class="meta">
+      <span class="k">Autor</span><span class="v">William Elisban Chávez Díaz</span>
+      <span class="k">Empresa</span><span class="v">Aseguradora Chanchito Feliz</span>
+      <span class="k">Producto</span><span class="v">Inversión Segura · ahorro / devolución</span>
+      <span class="k">Canal hoy</span><span class="v">WhatsApp atendido por asesores humanos</span>
+      <span class="k">Horario asistido</span><span class="v">Lun–vie 9:00–18:00 · sábados hasta mediodía</span>
+    </div>
+    <div class="cards">
+      <div class="cardm"><div class="n">Fricción</div><div class="t">Atención limitada en WhatsApp</div><div class="d">Pocos asesores. Si todos están ocupados, el cliente agenda una llamada o se queda en espera.</div></div>
+      <div class="cardm"><div class="n">Ventana</div><div class="t">Lunes a sábado mediodía</div><div class="d">Fuera de ese horario no hay compra asistida. Noche, domingo y feriado se pierden.</div></div>
+      <div class="cardm"><div class="n">Meta</div><div class="t">Aumentar ventas</div><div class="d">Atender, cotizar y cerrar cuando el cliente escribe, no cuando se libera un asesor.</div></div>
+    </div>
+    <div class="call warn"><span class="t">Qué se rompe hoy</span><p>El WhatsApp actual no escala. Depende de una persona en un horario de oficina. El cliente que quiere resolver dudas, enviar su DNI o pagar un domingo no tiene con quién hablar. La venta se aplaza o se pierde.</p></div>
+  </section>
+
+  <section class="step" id="s0b" data-group="Propuesta" data-nav="Propuesta">
+    <p class="eyebrow">Documento de propuesta</p>
+    <h2>Un agente que acompaña la venta de punta a punta.</h2>
+    <p class="lead">No es un chatbot de respuestas fijas. Es un <b>asesor digital en WhatsApp</b> que <b>acompaña todo el flujo de venta end to end</b> y <b>guarda el estado</b> de cada conversación: en qué va el cliente, qué datos ya entregó, qué plan cotizó y si ya pagó o se emitió. Entiende texto, voz, imagen y documentos. El cobro y la emisión <b>no los ejecuta el LLM</b>: el agente los orquesta y luego sigue leyendo ese estado.</p>
+    <ul class="checks">
+      <li><span class="b">1</span><div><b>Asesor de producto.</b> Resuelve dudas de Inversión Segura con conocimiento (RAG), no con un menú rígido.</div></li>
+      <li><span class="b">2</span><div><b>Recopila información del cliente.</b> Nombre, datos de contacto y lo que haga falta para cotizar y emitir.</div></li>
+      <li><span class="b">3</span><div><b>Lee imágenes.</b> Captura DNI o el rostro cuando el cliente los manda por el chat.</div></li>
+      <li><span class="b">4</span><div><b>Lee documentos y audios.</b> Condicionado, constancias o una nota de voz: el gateway transcribe y el orquestador entiende.</div></li>
+      <li><span class="b">5</span><div><b>Cotiza y gestiona planes.</b> Elige la tool de cotización y presenta primas y periodos.</div></li>
+      <li><span class="b">6</span><div><b>Acompaña el cierre y el después.</b> Pide el link; el webhook cobra; Emission documenta y avisa. El agente <b>guarda el estado</b> en cada paso. Si el cliente vuelve (“¿ya salió mi póliza?”), retoma desde ahí: no empieza de cero ni vuelve a emitir.</div></li>
+    </ul>
+    <div class="cards">
+      <div class="cardm kpi coral"><div class="n">Total MVP</div><div class="big">$96 – 110</div><div class="d">USD / mes · 1 000 conversaciones</div></div>
+      <div class="cardm kpi green"><div class="n">Cloud GCP</div><div class="big">$36 – 49</div><div class="d">Run + WAHA + GKE + SQL del TO-BE</div></div>
+      <div class="cardm kpi blue"><div class="n">Gemini 2.5 Flash</div><div class="big">~$60</div><div class="d">Tokens in/out · sin input cache</div></div>
+    </div>
+    <div class="call ok"><span class="t">Regla de diseño</span><p>El agente <b>acompaña el flujo completo</b> (duda → datos → cotizar → pagar → emitir → post-compra) y <b>persiste el estado</b>. El LLM conversa y pide el link. El webhook cobra. Emission documenta. El agente no cobra ni emite: <b>lee y actualiza estado</b>.</p></div>
+    <div class="meta">
+      <span class="k">Región</span><span class="v">us-central1 · agosto 2026</span>
+      <span class="k">Costeo cloud</span><span class="v"><a href="https://cloud.google.com/products/calculator" target="_blank" rel="noopener">Google Cloud Pricing Calculator</a></span>
+      <span class="k">Costeo tokens</span><span class="v"><a href="https://cloud.google.com/vertex-ai/generative-ai/pricing" target="_blank" rel="noopener">Vertex AI Generative AI pricing</a> · sin input cache</span>
+    </div>
+  </section>
+
+  <section class="step" id="s1" data-group="Propuesta" data-nav="Sistema agéntico">
+    <p class="eyebrow">Sección 1 · Propuesta</p>
+    <h2>El sistema agéntico, por capas</h2>
+    <p>Ocho capas. El cerebro decide; las tools calculan; el cierre es un pipeline de eventos. Ninguna capa hace el trabajo de otra.</p>
+    <table class="t">
+      <thead><tr><th>Capa</th><th>Componente</th><th>Rol</th></tr></thead>
+      <tbody>
+        <tr><td>Canal</td><td>WhatsApp + Agent Gateway (Python, Cloud Run)</td><td>Entra/sale el mensaje. STT con Gemini si hay voz.</td></tr>
+        <tr><td>Cerebro</td><td>Agent Orchestrator (Python, Cloud Run) + <b>LangChain Provider</b></td><td>Acompaña el flujo end to end. Guarda estado, intención, memoria y tool-calling.</td></tr>
+        <tr><td>Conocimiento</td><td>Qdrant (Vector DB, GKE)</td><td>RAG: condicionado, FAQs y producto de Chanchito Feliz.</td></tr>
+        <tr><td>Modelo</td><td>Gemini Enterprise (Vertex AI)</td><td>STT en el Gateway; razonamiento vía LangChain en el orquestador.</td></tr>
+        <tr><td>Tool cotizar</td><td>API Quoter (Python, Cloud Run)</td><td>Primas y periodos.</td></tr>
+        <tr><td>Tool pagar</td><td>API Payment (Go, Cloud Run) + proveedor</td><td>Link de pago; webhook de confirmación.</td></tr>
+        <tr><td>Cierre</td><td>API Emission (Node.js, Cloud Run)</td><td>Póliza, PDF, correo. El agente no participa.</td></tr>
+        <tr><td>Aviso</td><td>Gateway + SMTP</td><td>WhatsApp al cliente y email de bienvenida.</td></tr>
+      </tbody>
+    </table>
+    <h3>Flujo de negocio</h3>
+    <div class="cmd">
+      <div class="head"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="lbl">Quién hace qué</span><button class="cp">Copiar</button></div>
+      <pre>Conversar / cotizar          →  Orchestrator + LangChain + Gemini + Quoter + Qdrant
+Pedir link de pago           →  Pub/Sub Payment Link Generator → API Payment
+Cliente paga en el proveedor →  Webhook → API Payment → Cobranzas DB
+Emitir póliza                →  Pub/Sub Emission Process → API Emission
+Avisar                      →  Gateway (WhatsApp) + SMTP (correo)</pre>
+    </div>
+    <div class="flow3">
+      <div class="b"><b>Conversar</b>Agente + RAG + Quoter</div><span class="a">→</span>
+      <div class="b"><b>Pagar</b>Pub/Sub → Payment + webhook</div><span class="a">→</span>
+      <div class="b"><b>Emitir</b>Emission · sin LLM</div><span class="a">→</span>
+      <div class="b"><b>Avisar</b>WhatsApp + correo</div>
+    </div>
+  </section>
+
+  <section class="step" id="s2" data-group="Arquitectura" data-nav="Diseño de Solución">
+    <p class="eyebrow">Sección 2 · Componentes</p>
+    <h2>Diagrama lógico de componentes</h2>
+    <p>Arquitectura objetivo (TO-BE) en GCP. Primero el diseño de componentes; debajo, la misma topología en Mermaid. El orquestador <b>no</b> se conecta al tópico de emisión.</p>
+    <div class="art" id="art-arch">
+      <div class="ahead"><span class="at">Artefacto 01</span><span class="an">Arquitectura TO-BE · diseño de componentes</span></div>
+      <div class="abody">
+        <img class="arch" src="docs/RumbIA.drawio (3).svg" alt="Diagrama de componentes: Gateway, Orchestrator, LangChain, Gemini, Qdrant, Quoter, Payment, Emission y notificaciones">
+      </div>
+    </div>
+    <div class="art" id="art-arch-mmd">
+      <div class="ahead"><span class="at">Artefacto 02</span><span class="an">Diagrama lógico de componentes · Mermaid</span></div>
+      <div class="abody">
+        <div class="mermaid-box" data-mmd="arch"><p class="wait">Dibujando el diagrama…</p></div>
+      </div>
+    </div>
+    <h3>Lectura del diagrama</h3>
+    <ul class="checks">
+      <li><span class="b">●</span><div><b>Verde:</b> servicios Cloud Run y datos.</div></li>
+      <li><span class="b">●</span><div><b>Naranja punteado:</b> webhook del proveedor de pago hacia API Payment.</div></li>
+      <li><span class="b">●</span><div><b>Rojo punteado:</b> DLQ + <i>Retry One Job</i> (Scheduler cada 2 min) si falla la generación del link.</div></li>
+      <li><span class="b">●</span><div>El orquestador <b>no</b> se conecta al tópico de emisión.</div></li>
+      <li><span class="b">●</span><div><b>LangChain Provider</b> cuelga del orquestador: runtime del agente (tools, memoria, RAG). Gemini en el Gateway es STT (<code class="i">tool audio</code>); Gemini detrás de LangChain es el LLM de razonamiento.</div></li>
+    </ul>
+  </section>
+
+  <section class="step" id="s4" data-group="Arquitectura" data-nav="Responsabilidades">
+    <p class="eyebrow">Sección 2.3 · Quién hace qué</p>
+    <h2>Responsabilidades por componente</h2>
+    <table class="t">
+      <thead><tr><th>Componente</th><th>Tecnología</th><th>Qué hace</th></tr></thead>
+      <tbody>
+        <tr><td>Agent Gateway</td><td>Python, Cloud Run</td><td>WhatsApp ↔ sistema. STT. Aviso final al cliente.</td></tr>
+        <tr><td>Agent Orchestrator</td><td>Python, Cloud Run</td><td>Decide cotizar o pedir link. Delega el grafo a LangChain. <b>No emite.</b></td></tr>
+        <tr><td>LangChain Provider</td><td>Framework del agente</td><td>Tools, memoria y llamadas a Gemini.</td></tr>
+        <tr><td>Qdrant</td><td>Vector DB, GKE</td><td>Fuente de conocimiento (RAG).</td></tr>
+        <tr><td>API Quoter</td><td>Python, Cloud Run</td><td>Cálculo de cotización.</td></tr>
+        <tr><td>API Payment</td><td>Go, Cloud Run</td><td>Link, webhook, Cobranzas. Publica emisión si <code class="i">paid</code>.</td></tr>
+        <tr><td>Provider Payment</td><td>Externo</td><td>Checkout. Confirma por webhook.</td></tr>
+        <tr><td>API Emission</td><td>Node.js, Cloud Run</td><td>PDF, Cloud SQL, Storage, SMTP, avisa al Gateway.</td></tr>
+        <tr><td>Pub/Sub</td><td>GCP</td><td>Desacopla link, emisión y notificación.</td></tr>
+        <tr><td>DLQ + Retry + Scheduler</td><td>Go / Cloud Run</td><td>Reintenta fallos de generación de link.</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="step" id="s5" data-group="Secuencia" data-nav="Diagrama de Secuencia">
+    <p class="eyebrow">Sección 3 · Secuencia</p>
+    <h2>Quién habla con quién — y por qué el agente no emite</h2>
+    <p>Tres bloques de color: primero decide el agente, después cobra el proveedor, al final emite y avisa el sistema. Sin LLM en el cierre.</p>
+    <div class="art">
+      <div class="ahead"><span class="at">Artefacto 03</span><span class="an">Conversar → pagar → emitir</span></div>
+      <div class="abody">
+        <div class="mermaid-box" data-mmd="seq"><p class="wait">Dibujando la secuencia…</p></div>
+      </div>
+    </div>
+    <div class="cards">
+      <div class="cardm"><div class="n">Verde</div><div class="t">1. Conversación</div><div class="d">El agente decide: RAG, Gemini, Quoter. Aquí sí hay tokens.</div></div>
+      <div class="cardm"><div class="n">Azul</div><div class="t">2. Pago</div><div class="d">Pub/Sub + Payment + proveedor. El agente ya no interviene.</div></div>
+      <div class="cardm"><div class="n">Ámbar</div><div class="t">3. Emisión</div><div class="d">PDF, correo y WhatsApp. Cero invocaciones al LLM.</div></div>
+    </div>
+  </section>
+
+  <section class="step" id="s6" data-group="Secuencia" data-nav="Reintento del link">
+    <p class="eyebrow">Sección 3.1 · Resiliencia</p>
+    <h2>Si falla el link, el Scheduler reintenta</h2>
+    <p>El retry <b>no</b> reprocesa el webhook. El webhook debe ser idempotente: el mismo <code class="i">transactionId</code> no emite dos pólizas.</p>
+    <div class="art">
+      <div class="ahead"><span class="at">Artefacto 04</span><span class="an">DLQ · Retry One Job · cada 2 minutos</span></div>
+      <div class="abody">
+        <div class="mermaid-box" data-mmd="retry"><p class="wait">Dibujando el reintento…</p></div>
+      </div>
+    </div>
+    <div class="call warn"><span class="t">Idempotencia del webhook</span><p>El camino de fallo del link vive en la DLQ. El camino de fallo del cobro no se reintenta a ciegas: el mismo <code class="i">transactionId</code> no puede disparar dos emisiones.</p></div>
+  </section>
+
+  <section class="step" id="s7" data-group="Costos" data-nav="Cloud GCP">
+    <p class="eyebrow">Sección 4.1 · Calculadora GCP</p>
+    <h2>Costo de los servicios cloud</h2>
+    <p>Precios de <b>lista</b> (sin CUD). Hipótesis MVP: 1 000 conversaciones / mes, 12 mensajes c/u, 1,8 invocaciones LLM por mensaje, 20 % voz (15 s), 5 % de cierre (50 emisiones).</p>
+    <div class="call info"><span class="t">Tarifas Cloud Run request-based · us-central1</span><p>$0.000024 / vCPU-s · $0.0000025 / GiB-s · $0.40 / M requests. Free tier por cuenta: 180 000 vCPU-s, 360 000 GiB-s, 2 M requests. Reproducir en la <a href="https://cloud.google.com/products/calculator" target="_blank" rel="noopener">calculadora de Google Cloud</a>.</p></div>
+    <h3>Uso de Cloud Run (cae en free tier)</h3>
+    <table class="t">
+      <thead><tr><th>Servicio</th><th>Requests/mes</th><th>Duración</th><th>vCPU</th><th>Mem</th><th>vCPU-s</th><th>GiB-s</th></tr></thead>
+      <tbody>
+        <tr><td>Agent Gateway</td><td class="num">12 000</td><td>5 s</td><td>1</td><td>0,5</td><td class="num">60 000</td><td class="num">30 000</td></tr>
+        <tr><td>Agent Orchestrator</td><td class="num">21 600</td><td>4 s</td><td>1</td><td>0,5</td><td class="num">86 400</td><td class="num">43 200</td></tr>
+        <tr><td>API Quoter</td><td class="num">2 000</td><td>8 s</td><td>1</td><td>1,0</td><td class="num">16 000</td><td class="num">16 000</td></tr>
+        <tr><td>API Payment</td><td class="num">250</td><td>2 s</td><td>1</td><td>0,5</td><td class="num">500</td><td class="num">250</td></tr>
+        <tr><td>API Emission</td><td class="num">50</td><td>45 s</td><td>1</td><td>1,0</td><td class="num">2 250</td><td class="num">2 250</td></tr>
+        <tr class="tot"><td>APIs</td><td></td><td></td><td></td><td></td><td class="num">~165 150</td><td class="num">~91 700</td></tr>
+      </tbody>
+    </table>
+    <p>Las APIs caen en el free tier de compute y requests → <b>≈ $0</b>.</p>
+    <h3>Servicios que sí se pagan</h3>
+    <table class="t">
+      <thead><tr><th>Concepto</th><th>Cálculo</th><th>USD / mes</th></tr></thead>
+      <tbody>
+        <tr><td>WAHA / Gateway caliente (min instance 1, 1 vCPU + 1 GiB, 730 h)</td><td>2 × 2 628 000 × $0.0000025</td><td class="num">13,14</td></tr>
+        <tr><td>Cloud Storage ~5 GB documentos</td><td>$0.020 / GB; 5 GB Always Free</td><td class="num">0,00 – 0,10</td></tr>
+        <tr><td>Artifact Registry ~2 GB</td><td>0,5 GB free + GiB-hora</td><td class="num">~0,15</td></tr>
+        <tr><td>Cloud Build 20 × 10 min</td><td>2 500 min free</td><td class="num">0,00</td></tr>
+        <tr><td>Cloud Logging ~8 GiB</td><td>50 GiB free / proyecto</td><td class="num">0,00</td></tr>
+        <tr><td>Pub/Sub (volumen MVP)</td><td>mensajes de link / emisión / notify</td><td class="num">~0,10</td></tr>
+        <tr><td>GKE Qdrant + Cobranzas (nodo e2-small aprox.)</td><td>estimado lista</td><td class="num">~15 – 25</td></tr>
+        <tr><td>Cloud SQL Product DB (db-f1-micro)</td><td>estimado lista</td><td class="num">~8 – 10</td></tr>
+        <tr class="tot"><td>Subtotal cloud MVP</td><td></td><td class="num">≈ 36 – 49</td></tr>
+      </tbody>
+    </table>
+    <div class="call warn"><span class="t">MVP más barato</span><p>En un MVP “solo Cloud Run + WAHA encendido” (sin GKE/SQL) el cloud baja a <b>~$14</b>. El rango de arriba incluye Qdrant, Cobranzas y Product DB del diagrama TO-BE.</p></div>
+  </section>
+
+  <section class="step" id="s8" data-group="Costos" data-nav="Tokens de IA">
+    <p class="eyebrow">Sección 4.2 · Vertex AI</p>
+    <h2>Costo de modelos de IA — tokens in/out, sin cache</h2>
+    <p><b>Gemini 2.5 Flash</b> Standard en Vertex AI. <b>No se considera input cache.</b> Fuente: <a href="https://cloud.google.com/vertex-ai/generative-ai/pricing" target="_blank" rel="noopener">pricing Vertex AI</a>.</p>
+    <table class="t">
+      <thead><tr><th>Modalidad</th><th>USD / 1 M tokens</th></tr></thead>
+      <tbody>
+        <tr><td>Input texto</td><td class="num">0,30</td></tr>
+        <tr><td>Input audio</td><td class="num">1,00</td></tr>
+        <tr><td>Output (respuesta + reasoning)</td><td class="num">2,50</td></tr>
+      </tbody>
+    </table>
+    <p>Por invocación del orquestador (promedio, sin cache): <b>4 000 tokens in</b> · <b>600 tokens out</b>.</p>
+    <table class="t">
+      <thead><tr><th>Flujo</th><th>Tokens / mes</th><th>Cálculo</th><th>USD / mes</th></tr></thead>
+      <tbody>
+        <tr><td>Input agente</td><td class="num">21 600 × 4 000 = 86,4 M</td><td>× $0,30</td><td class="num">25,92</td></tr>
+        <tr><td>Output agente</td><td class="num">21 600 × 600 = 12,96 M</td><td>× $2,50</td><td class="num">32,40</td></tr>
+        <tr><td>Input audio STT</td><td class="num">2 400 × 15 s × 32 = 1,15 M</td><td>× $1,00</td><td class="num">1,15</td></tr>
+        <tr><td>Output STT</td><td class="num">2 400 × 80 = 0,19 M</td><td>× $2,50</td><td class="num">0,48</td></tr>
+        <tr class="tot"><td>Total IA</td><td></td><td></td><td class="num">≈ 59,95</td></tr>
+      </tbody>
+    </table>
+    <div class="cmd">
+      <div class="head"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="lbl">Fórmula · sin input cache</span><button class="cp">Copiar</button></div>
+      <pre><span class="cm"># USD_IA mensual</span>
+USD_IA = (invocaciones × 4000 / 1e6) × 0.30
+       + (invocaciones ×  600 / 1e6) × 2.50
+       + (audios × 15 × 32 / 1e6) × 1.00
+       + (audios × 80 / 1e6) × 2.50
+
+invocaciones = conversaciones × 12 × 1,8
+audios       = conversaciones × 12 × 0,20</pre>
+    </div>
+  </section>
+
+  <section class="step" id="s9" data-group="Costos" data-nav="Resumen mensual">
+    <p class="eyebrow">Sección 4.3 · Cuadro mensual</p>
+    <h2>Costo mensual de la solución</h2>
+    <table class="t">
+      <thead><tr><th>Rubro</th><th>USD / mes (MVP 1 000 conversaciones)</th></tr></thead>
+      <tbody>
+        <tr><td>Cloud (Run + WAHA + datos del TO-BE)</td><td class="num">~36 – 49</td></tr>
+        <tr><td>Gemini 2.5 Flash (in/out, sin cache)</td><td class="num">~60</td></tr>
+        <tr class="tot"><td>Total</td><td class="num">≈ 96 – 110</td></tr>
+      </tbody>
+    </table>
+    <h3>Escala</h3>
+    <table class="t">
+      <thead><tr><th>Conversaciones / mes</th><th>Cloud (aprox.)</th><th>IA (aprox.)</th><th>Total</th></tr></thead>
+      <tbody>
+        <tr><td class="num">1 000</td><td class="num">40</td><td class="num">60</td><td class="num"><b>~100</b></td></tr>
+        <tr><td class="num">5 000</td><td class="num">70</td><td class="num">300</td><td class="num"><b>~370</b></td></tr>
+        <tr><td class="num">10 000</td><td class="num">90</td><td class="num">600</td><td class="num"><b>~690</b></td></tr>
+      </tbody>
+    </table>
+    <div class="call info"><span class="t">Dónde duele el crecimiento</span><p>Escalar usuarios encarece sobre todo <b>el output del modelo</b>, no Cloud Run. El agente no se invoca en el webhook ni en la emisión: eso mantiene el costo de tokens acotado al chat.</p></div>
+  </section>
+
+  <section class="step" id="s10" data-group="Cierre" data-nav="Conclusión">
+    <p class="eyebrow">Sección 5 · Cierre</p>
+    <h2>Lo que se entrega como propuesta</h2>
+    <p>Hoy Inversión Segura se vende por WhatsApp solo cuando hay un asesor libre, en horario de oficina. La propuesta cierra esa brecha: un <b>agente que acompaña la venta end to end y guarda el estado</b> (Gateway + Orchestrator + <b>LangChain</b> + Gemini + Qdrant + Quoter) y un <b>pipeline de cierre sin LLM</b> (Payment con webhook → Emission → correo y WhatsApp). El cliente puede irse y volver: el agente retoma, no reinicia.</p>
+    <div class="cards">
+      <div class="cardm"><div class="n">01</div><div class="t">Propuesta agéntica</div><div class="d">Acompaña la venta end to end y guarda estado. Interpreta, elige tools; no cobra ni emite.</div></div>
+      <div class="cardm"><div class="n">02</div><div class="t">Diagrama de componentes</div><div class="d">TO-BE en GCP: imagen de diseño + vista Mermaid + responsabilidades.</div></div>
+      <div class="cardm"><div class="n">03</div><div class="t">Costo mensual</div><div class="d">Cloud por calculadora + tokens in/out sin cache. MVP ≈ $96–110.</div></div>
+    </div>
+    <div class="call ok"><span class="t">Cómo leerlo</span><p>El diagrama de componentes (imagen + Mermaid) muestra el mapa. El diagrama de secuencia de la sección 3 muestra el orden temporal: primero decide el agente, después cobra el proveedor, al final emite y avisa el sistema.</p></div>
+    <div class="foot">
+      <span>William Chávez · Datapath · Sistema agéntico · Aseguradora Chanchito Feliz</span>
+      <span>us-central1 · agosto 2026 · sin input cache</span>
+    </div>
+  </section>
+
+  </div>
+</main>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<script>
+mermaid.initialize({
+  startOnLoad: false,
+  theme: "base",
+  securityLevel: "loose",
+  flowchart: { curve: "basis", padding: 16, htmlLabels: true },
+  themeVariables: {
+    fontFamily: "IBM Plex Sans, system-ui, sans-serif",
+    primaryColor: "#E2F3EC",
+    primaryTextColor: "#16243F",
+    primaryBorderColor: "#12805F",
+    lineColor: "#3D4757",
+    secondaryColor: "#E8F0FA",
+    tertiaryColor: "#FFF0EA",
+    noteBkgColor: "#FBF1DD",
+    noteTextColor: "#16243F",
+    actorBkg: "#FFFFFF",
+    actorBorder: "#C9D1DC",
+    actorTextColor: "#16243F",
+    signalColor: "#3D4757",
+    signalTextColor: "#16243F"
+  }
+});
+
+const MMD = {
+  arch: `flowchart TB
+    Cliente((Cliente))
+    WA[WhatsApp]
+    GEM["Gemini Enterprise\\nVertex AI"]
+
+    subgraph GCP["Google Cloud Platform"]
+      direction TB
+      GW["Agent Gateway\\nPython / Cloud Run"]
+      ORQ["Agent Orchestrator\\nPython / Cloud Run"]
+      LC["LangChain Provider"]
+      COT["API Quoter\\nPython / Cloud Run"]
+      PAY["API Payment\\nGo / Cloud Run"]
+      EMI["API Emission\\nNode.js / Cloud Run"]
+      RET["Retry One Job\\nGo / Cloud Run"]
+      QD[("Qdrant\\nVector DB / GKE")]
+      COB[("Cobranzas DB / GKE")]
+      GCS[("Cloud Storage\\n/documents-clients")]
+      SQL[("Product DB\\nCloud SQL")]
+      TPL["Pub/Sub · Payment Link"]
+      TEM["Pub/Sub · Emission"]
+      TNOT["Pub/Sub · Notification"]
+      DLQ["DLQ Unprocess"]
+      SCH["Cloud Scheduler\\ncada 2 min"]
+    end
+
+    PROV["Provider Payment"]
+    SMTP[SMTP]
+
+    Cliente <--> WA
+    WA <--> GW
+    GW <-->|tool audio STT| GEM
+    GW <--> ORQ
+    ORQ --- LC
+    LC <--> GEM
+    ORQ <-->|RAG producto| QD
+    ORQ -->|tool cotizar| COT
+    ORQ --> TPL
+    TPL --> PAY
+    PAY --> COB
+    PAY --> PROV
+    PROV -.->|webhook| PAY
+    TPL -.-> DLQ
+    DLQ --> RET
+    SCH --> RET
+    RET --> TPL
+    PAY --> TEM
+    TEM --> EMI
+    EMI --> GCS
+    EMI --> SQL
+    EMI --> TNOT
+    TNOT --> SMTP
+    EMI --> GW
+
+    classDef run fill:#E2F3EC,stroke:#12805F,color:#16243F
+    classDef data fill:#E8F0FA,stroke:#2A6BB0,color:#16243F
+    classDef ai fill:#EFEAF8,stroke:#6A4BA8,color:#16243F
+    classDef ext fill:#FFF0EA,stroke:#C84A22,color:#16243F
+    classDef bus fill:#FBF1DD,stroke:#B37D0C,color:#16243F
+    classDef fail fill:#FBEAE8,stroke:#C93B32,color:#16243F
+
+    class GW,ORQ,LC,COT,PAY,EMI,RET run
+    class QD,COB,GCS,SQL data
+    class GEM ai
+    class Cliente,WA,PROV,SMTP ext
+    class TPL,TEM,TNOT bus
+    class DLQ,SCH fail`,
+
+  seq: `sequenceDiagram
+    autonumber
+    actor C as Cliente
+    participant WA as WhatsApp
+    participant GW as Agent Gateway
+    participant GEM as Gemini Vertex AI
+    participant ORQ as Agent Orchestrator
+    participant LC as LangChain Provider
+    participant QD as Qdrant
+    participant COT as API Quoter
+    participant TPL as Pub/Sub Link Generator
+    participant PAY as API Payment
+    participant PROV as Provider Payment
+    participant TEM as Pub/Sub Emission
+    participant EMI as API Emission
+    participant SQL as Product DB / Storage
+    participant SMTP as SMTP
+    participant TNOT as Pub/Sub Notification
+
+    rect rgb(232, 245, 233)
+        Note over C,COT: 1. Conversación — el agente decide
+        C->>WA: texto o nota de voz
+        WA->>GW: mensaje
+        opt audio
+            GW->>GEM: transcripción STT
+            GEM-->>GW: texto
+        end
+        GW->>ORQ: imagen / texto / audio / documentos
+        ORQ->>LC: ejecutar grafo del agente
+        LC->>QD: retrieve RAG
+        QD-->>LC: contexto del producto
+        LC->>GEM: razonar + tools
+        GEM-->>LC: cotizar / pedir pago
+        LC-->>ORQ: decisión + respuesta
+        ORQ->>COT: calcular prima
+        COT-->>ORQ: cotización
+        ORQ-->>GW: respuesta + link cuando aplique
+        GW->>WA: mensaje al cliente
+        WA->>C: cotización / link
+    end
+
+    rect rgb(227, 242, 253)
+        Note over ORQ,PROV: 2. Pago — el agente ya no interviene
+        ORQ->>TPL: generar link de pago
+        TPL->>PAY: evento
+        PAY->>PAY: persiste intento en Cobranzas DB
+        PAY->>PROV: crea sesión / checkout
+        PROV-->>C: el cliente paga en el proveedor
+        PROV->>PAY: webhook pago OK
+        PAY->>PAY: actualiza Cobranzas idempotente
+    end
+
+    rect rgb(255, 243, 224)
+        Note over PAY,C: 3. Emisión y aviso — sin LLM
+        PAY->>TEM: process emit OK
+        TEM->>EMI: evento
+        EMI->>SQL: póliza + PDF en Storage
+        EMI->>TNOT: notificar correo
+        TNOT->>SMTP: email de bienvenida + adjunto
+        EMI->>GW: confirmación chatId y nro póliza
+        GW->>WA: póliza emitida
+        WA->>C: mensaje en WhatsApp
+    end`,
+
+  retry: `sequenceDiagram
+    autonumber
+    participant TPL as Pub/Sub Link Generator
+    participant DLQ as DLQ Unprocess
+    participant SCH as Cloud Scheduler
+    participant RET as Retry One Job
+    participant PAY as API Payment
+
+    TPL-->>DLQ: mensaje no procesado
+    loop cada 2 minutos
+        SCH->>RET: trigger
+        RET->>DLQ: pull
+        RET->>PAY: reintenta generar link
+    end`
+};
+
+async function drawMermaid() {
+  const hosts = [...document.querySelectorAll("[data-mmd]")];
+  for (const el of hosts) {
+    const key = el.dataset.mmd;
+    const src = MMD[key];
+    if (!src) continue;
+    try {
+      const id = "mmd-" + key + "-" + Math.random().toString(36).slice(2, 8);
+      const { svg } = await mermaid.render(id, src);
+      el.innerHTML = svg;
+    } catch (err) {
+      el.innerHTML = '<p class="wait">No se pudo dibujar el diagrama. Recarga con internet (CDN de Mermaid).</p>';
+      console.error("Mermaid " + key, err);
+    }
+  }
+}
+if (typeof mermaid !== "undefined") {
+  drawMermaid();
+} else {
+  document.querySelectorAll("[data-mmd]").forEach((el) => {
+    el.innerHTML = '<p class="wait">Mermaid no cargó. Abre el HTML con internet.</p>';
+  });
+}
+
+const secs = [...document.querySelectorAll("section.step")];
+const nav = document.getElementById("nav");
+let lastGroup = "", navHTML = "";
+secs.forEach((s, i) => {
+  if (s.dataset.group !== lastGroup) {
+    lastGroup = s.dataset.group;
+    navHTML += '<div class="ng">' + lastGroup + "</div>";
+  }
+  navHTML += '<button class="ni" data-t="' + s.id + '"><span class="n">' + String(i).padStart(2, "0") + "</span><span>" + s.dataset.nav + "</span></button>";
+});
+nav.innerHTML = navHTML;
+const items = [...nav.querySelectorAll(".ni")];
+items.forEach((b) => b.addEventListener("click", () => {
+  document.getElementById(b.dataset.t).scrollIntoView({ behavior: "smooth", block: "start" });
+}));
+const main = document.getElementById("main");
+if (typeof IntersectionObserver !== "undefined") {
+  const io = new IntersectionObserver((es) => {
+    es.forEach((e) => {
+      if (e.isIntersecting) {
+        items.forEach((b) => b.classList.toggle("on", b.dataset.t === e.target.id));
+      }
+    });
+  }, { root: main, rootMargin: "-15% 0px -70% 0px", threshold: 0 });
+  secs.forEach((s) => io.observe(s));
+}
+
+document.querySelectorAll(".cmd .cp").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    const pre = btn.closest(".cmd").querySelector("pre");
+    navigator.clipboard.writeText(pre.innerText).then(() => {
+      const o = btn.textContent;
+      btn.textContent = "Copiado";
+      setTimeout(() => { btn.textContent = o; }, 1400);
+    });
+  });
+});
+
+function bindZoom(art) {
+  if (art.dataset.zoomReady) return;
+  const body = art.querySelector(".abody");
+  if (!body || !body.querySelector("img.arch, .mermaid-box")) return;
+  art.dataset.zoomReady = "1";
+
+  const view = document.createElement("div");
+  view.className = "zview";
+  const inner = document.createElement("div");
+  inner.className = "zinner";
+  while (body.firstChild) inner.appendChild(body.firstChild);
+  view.appendChild(inner);
+  body.appendChild(view);
+
+  let scale = 1;
+  const MIN = 0.5, MAX = 3, STEP = 0.25;
+  const bar = document.createElement("div");
+  bar.className = "zbar";
+  bar.innerHTML = '<button type="button" class="zb" data-z="-" aria-label="Alejar">−</button><span class="zlbl">100%</span><button type="button" class="zb" data-z="+" aria-label="Acercar">+</button><button type="button" class="zb reset" data-z="0">100%</button>';
+  const head = art.querySelector(".ahead");
+  const fsb = head.querySelector(".fsb");
+  if (fsb) head.insertBefore(bar, fsb);
+  else head.appendChild(bar);
+
+  function apply() {
+    bar.querySelector(".zlbl").textContent = Math.round(scale * 100) + "%";
+    view.classList.toggle("is-zoomed", scale > 1);
+    const img = inner.querySelector("img.arch");
+    const svg = inner.querySelector(".mermaid-box svg");
+    const box = inner.querySelector(".mermaid-box");
+    inner.style.zoom = "";
+    if (scale <= 1) {
+      inner.style.width = "100%";
+      if (img) {
+        img.style.width = "";
+        img.style.maxWidth = "";
+        img.style.height = "";
+      }
+      if (svg) {
+        svg.style.width = "";
+        svg.style.height = "";
+        svg.style.maxWidth = "";
+        svg.style.maxHeight = "";
+      }
+      if (box) box.style.width = "";
+      return;
+    }
+    const base = view.clientWidth;
+    const w = Math.round(base * scale) + "px";
+    inner.style.width = "max-content";
+    if (img) {
+      img.style.maxWidth = "none";
+      img.style.width = w;
+      img.style.height = "auto";
+    }
+    if (svg) {
+      svg.style.maxWidth = "none";
+      svg.style.maxHeight = "none";
+      svg.style.width = w;
+      svg.style.height = "auto";
+    }
+    if (box) box.style.width = "max-content";
+  }
+  function setScale(next) {
+    scale = Math.round(Math.min(MAX, Math.max(MIN, next)) * 100) / 100;
+    apply();
+  }
+  art._setZoom = setScale;
+  art._getZoom = function () { return scale; };
+  bar.addEventListener("click", (e) => {
+    const btn = e.target.closest("[data-z]");
+    if (!btn) return;
+    if (btn.dataset.z === "+") setScale(scale + STEP);
+    else if (btn.dataset.z === "-") setScale(scale - STEP);
+    else setScale(1);
+  });
+  view.addEventListener("wheel", (e) => {
+    if (!e.ctrlKey && !e.metaKey) return;
+    e.preventDefault();
+    setScale(scale + (e.deltaY < 0 ? STEP : -STEP));
+  }, { passive: false });
+
+  let dragging = false, sx = 0, sy = 0, sl = 0, st = 0;
+  view.addEventListener("pointerdown", (e) => {
+    if (scale <= 1 || e.button !== 0) return;
+    dragging = true;
+    view.classList.add("is-panning");
+    sx = e.clientX;
+    sy = e.clientY;
+    sl = view.scrollLeft;
+    st = view.scrollTop;
+    view.setPointerCapture(e.pointerId);
+    e.preventDefault();
+  });
+  view.addEventListener("pointermove", (e) => {
+    if (!dragging) return;
+    view.scrollLeft = sl - (e.clientX - sx);
+    view.scrollTop = st - (e.clientY - sy);
+  });
+  function endPan() {
+    dragging = false;
+    view.classList.remove("is-panning");
+  }
+  view.addEventListener("pointerup", endPan);
+  view.addEventListener("pointercancel", endPan);
+}
+
+document.querySelectorAll(".art").forEach((art) => {
+  const head = art.querySelector(".ahead");
+  const b = document.createElement("button");
+  b.className = "fsb";
+  b.type = "button";
+  b.setAttribute("aria-label", "Ver en pantalla completa");
+  b.innerHTML = "⛶&nbsp; Pantalla completa";
+  head.appendChild(b);
+  function label() {
+    const on = (document.fullscreenElement === art) || art.classList.contains("fsx");
+    b.innerHTML = on ? "✕&nbsp; Salir (Esc)" : "⛶&nbsp; Pantalla completa";
+  }
+  b.addEventListener("click", () => {
+    if (document.fullscreenElement === art) { document.exitFullscreen(); return; }
+    if (art.classList.contains("fsx")) { art.classList.remove("fsx"); label(); return; }
+    if (art.requestFullscreen) {
+      const p = art.requestFullscreen();
+      if (p && p.catch) p.catch(() => { art.classList.add("fsx"); label(); });
+    } else { art.classList.add("fsx"); label(); }
+  });
+  document.addEventListener("fullscreenchange", label);
+  bindZoom(art);
+});
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") {
+    document.querySelectorAll(".art.fsx").forEach((a) => {
+      a.classList.remove("fsx");
+      const bb = a.querySelector(".fsb");
+      if (bb) bb.innerHTML = "⛶&nbsp; Pantalla completa";
+    });
+  }
+  const live = document.fullscreenElement && document.fullscreenElement.classList.contains("art")
+    ? document.fullscreenElement
+    : document.querySelector(".art.fsx");
+  if (!live || !live._setZoom) return;
+  const cur = live._getZoom ? live._getZoom() : 1;
+  if (e.key === "+" || e.key === "=") { e.preventDefault(); live._setZoom(cur + 0.25); }
+  if (e.key === "-" || e.key === "_") { e.preventDefault(); live._setZoom(cur - 0.25); }
+});
+</script>
+</body>
+</html>
